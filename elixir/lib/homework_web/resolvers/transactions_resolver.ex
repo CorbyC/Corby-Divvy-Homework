@@ -2,6 +2,7 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   alias Homework.Merchants
   alias Homework.Transactions
   alias Homework.Users
+  alias Homework.Companies
 
   @doc """
   Get a list of transcations
@@ -11,17 +12,24 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   end
 
   @doc """
+  Get the merchant associated with a transaction
+  """
+  def merchant(_root, _args, %{source: %{merchant_id: merchant_id}}) do
+    {:ok, Merchants.get_merchant!(merchant_id)}
+  end
+
+  @doc """
   Get the user associated with a transaction
   """
   def user(_root, _args, %{source: %{user_id: user_id}}) do
     {:ok, Users.get_user!(user_id)}
   end
 
-  @doc """
-  Get the merchant associated with a transaction
+@doc """
+  Get the company associated with a transaction
   """
-  def merchant(_root, _args, %{source: %{merchant_id: merchant_id}}) do
-    {:ok, Merchants.get_merchant!(merchant_id)}
+  def company(_root, _args, %{source: %{company_id: company_id}}) do
+    {:ok, Companies.get_company!(company_id)}
   end
 
   @doc """
