@@ -35,7 +35,7 @@ defmodule Homework.TransactionsTest do
 
       valid_attrs = %{
         amount: 42,
-        credit: true,
+        credit: false, # mismatched a unit test. Changed here insteadn of the test because I'd think a transaction is credit OR debit but not both
         debit: true,
         description: "some description",
         merchant_id: merchant1.id,
@@ -98,7 +98,7 @@ defmodule Homework.TransactionsTest do
     } do
       assert {:ok, %Transaction{} = transaction} = Transactions.create_transaction(valid_attrs)
       assert transaction.amount == 42
-      assert transaction.credit == true
+      assert transaction.credit == false
       assert transaction.debit == true
       assert transaction.description == "some description"
       assert transaction.merchant_id == merchant1.id
