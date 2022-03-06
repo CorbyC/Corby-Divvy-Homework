@@ -35,7 +35,7 @@ defmodule Homework.TransactionsTest do
 
       valid_attrs = %{
         amount: 42,
-        credit: false, # mismatched a unit test. Changed here insteadn of the test because I'd think a transaction is credit OR debit but not both
+        credit: false, # mismatched a unit test. Changed here instead of the test because I'd think a transaction is credit OR debit but not both
         debit: true,
         description: "some description",
         merchant_id: merchant1.id,

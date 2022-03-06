@@ -19,16 +19,20 @@ Ecto.Adapters.SQL.query!(
 Ecto.Adapters.SQL.query!(
  Homework.Repo, "DELETE FROM users"
 )
+Ecto.Adapters.SQL.query!(
+ Homework.Repo, "DELETE FROM companies"
+)
 
-# Homework.Repo.insert!(%Homework.Users.User{first_name: "", last_name: "", dob: ""})
+Homework.Repo.insert!(%Homework.Companies.Company{name: "Bridge Four", credit_line: 5000})
+Homework.Repo.insert!(%Homework.Companies.Company{name: "Ghostbloods", credit_line: 400000})
+Homework.Repo.insert!(%Homework.Companies.Company{name: "Knights Radiant", credit_line: 120000})
+
 Homework.Repo.insert!(%Homework.Users.User{first_name: "Kaladin", last_name: "Stormblessed", dob: "05-09-1986"})
 Homework.Repo.insert!(%Homework.Users.User{first_name: "Dalinar", last_name: "Kholin", dob: "03-12-1955"})
 Homework.Repo.insert!(%Homework.Users.User{first_name: "Cephandrius", last_name: "Hoid", dob: "01-04-306"})
 Homework.Repo.insert!(%Homework.Users.User{first_name: "Szeth", last_name: "Vallano", dob: "04-08-1980"})
 Homework.Repo.insert!(%Homework.Users.User{first_name: "Shallan", last_name: "Davar", dob: "07-02-1984"})
 
-
-# Homework.Repo.insert!(%Homework.Merchants.Merchant{name: "", description: ""})
 Homework.Repo.insert!(%Homework.Merchants.Merchant{name: "Urithiru", description: "Seat of the Knights Radiant"})
 Homework.Repo.insert!(%Homework.Merchants.Merchant{name: "Kharbranth", description: "Definitely a place"})
 Homework.Repo.insert!(%Homework.Merchants.Merchant{name: "Thaylenah", description: "Much thay, very wow"})
