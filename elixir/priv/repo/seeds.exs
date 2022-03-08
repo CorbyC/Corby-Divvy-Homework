@@ -27,11 +27,13 @@ Homework.Repo.insert!(%Homework.Companies.Company{name: "Bridge Four", credit_li
 Homework.Repo.insert!(%Homework.Companies.Company{name: "Ghostbloods", credit_line: 400000})
 Homework.Repo.insert!(%Homework.Companies.Company{name: "Knights Radiant", credit_line: 120000})
 
-Homework.Repo.insert!(%Homework.Users.User{first_name: "Kaladin", last_name: "Stormblessed", dob: "05-09-1986"})
-Homework.Repo.insert!(%Homework.Users.User{first_name: "Dalinar", last_name: "Kholin", dob: "03-12-1955"})
-Homework.Repo.insert!(%Homework.Users.User{first_name: "Cephandrius", last_name: "Hoid", dob: "01-04-306"})
-Homework.Repo.insert!(%Homework.Users.User{first_name: "Szeth", last_name: "Vallano", dob: "04-08-1980"})
-Homework.Repo.insert!(%Homework.Users.User{first_name: "Shallan", last_name: "Davar", dob: "07-02-1984"})
+companies = Homework.Companies.list_companies([])
+
+Homework.Repo.insert!(%Homework.Users.User{first_name: "Kaladin", last_name: "Stormblessed", dob: "05-09-1986", company: Enum.at(companies,0)})
+Homework.Repo.insert!(%Homework.Users.User{first_name: "Dalinar", last_name: "Kholin", dob: "03-12-1955", company: Enum.at(companies,2)})
+Homework.Repo.insert!(%Homework.Users.User{first_name: "Cephandrius", last_name: "Hoid", dob: "01-04-306", company: Enum.at(companies,2)})
+Homework.Repo.insert!(%Homework.Users.User{first_name: "Szeth", last_name: "Vallano", dob: "04-08-1980", company: Enum.at(companies,2)})
+Homework.Repo.insert!(%Homework.Users.User{first_name: "Shallan", last_name: "Davar", dob: "07-02-1984", company: Enum.at(companies,1)})
 
 Homework.Repo.insert!(%Homework.Merchants.Merchant{name: "Urithiru", description: "Seat of the Knights Radiant"})
 Homework.Repo.insert!(%Homework.Merchants.Merchant{name: "Kharbranth", description: "Definitely a place"})
@@ -40,7 +42,7 @@ Homework.Repo.insert!(%Homework.Merchants.Merchant{name: "Lasting Integrity", de
 
 users = Homework.Users.list_users([])
 merchants = Homework.Merchants.list_merchants([])
-companies = Homework.Companies.list_companies([])
+
 
 Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 300, credit: true, debit: false, merchant: Enum.at(merchants,0), user: Enum.at(users,0), company: Enum.at(companies,0), description: "Bought a spear"})
 Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 12, credit: false, debit: true, merchant: Enum.at(merchants,1), user: Enum.at(users,1), company: Enum.at(companies,2),description: "New uniform"})

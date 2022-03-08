@@ -25,7 +25,7 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
     {:ok, Users.get_user!(user_id)}
   end
 
-@doc """
+  @doc """
   Get the company associated with a transaction
   """
   def company(_root, _args, %{source: %{company_id: company_id}}) do

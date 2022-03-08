@@ -1,7 +1,6 @@
 defmodule Homework.TransactionsTest do
   use Homework.DataCase
 
-  alias Ecto.UUID
   alias Homework.Merchants
   alias Homework.Transactions
   alias Homework.Users
@@ -23,20 +22,6 @@ defmodule Homework.TransactionsTest do
           name: "some updated name"
         })
 
-      {:ok, user1} =
-        Users.create_user(%{
-          dob: "some dob",
-          first_name: "some first_name",
-          last_name: "some last_name"
-        })
-
-      {:ok, user2} =
-        Users.create_user(%{
-          dob: "some updated dob",
-          first_name: "some updated first_name",
-          last_name: "some updated last_name"
-        })
-
       {:ok, company1} =
         Companies.create_company(%{
           name: "some name",
@@ -49,9 +34,26 @@ defmodule Homework.TransactionsTest do
           credit_line: 77000
         })
 
+      {:ok, user1} =
+        Users.create_user(%{
+          dob: "some dob",
+          first_name: "some first_name",
+          last_name: "some last_name",
+          company_id: company1.id
+        })
+
+      {:ok, user2} =
+        Users.create_user(%{
+          dob: "some updated dob",
+          first_name: "some updated first_name",
+          last_name: "some updated last_name",
+          company_id: company2.id
+        })
+
       valid_attrs = %{
         amount: 42,
-        credit: false, # mismatched a unit test. Changed here instead of the test because I'd think a transaction is credit OR debit but not both
+        # mismatched a unit test. Changed here instead of the test because I'd think a transaction is credit OR debit but not both
+        credit: false,
         debit: true,
         description: "some description",
         merchant_id: merchant1.id,
