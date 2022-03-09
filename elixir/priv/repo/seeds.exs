@@ -45,7 +45,10 @@ merchants = Homework.Merchants.list_merchants([])
 
 
 Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 300, credit: true, debit: false, merchant: Enum.at(merchants,0), user: Enum.at(users,0), company: Enum.at(companies,0), description: "Bought a spear"})
-Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 12, credit: false, debit: true, merchant: Enum.at(merchants,1), user: Enum.at(users,1), company: Enum.at(companies,2),description: "New uniform"})
+Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 300, credit: true, debit: false, merchant: Enum.at(merchants,0), user: Enum.at(users,0), company: Enum.at(companies,0), description: "Bought another spear"})
+Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 450, credit: true, debit: false, merchant: Enum.at(merchants,0), user: Enum.at(users,0), company: Enum.at(companies,0), description: "Bought a uniform"})
+Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 500, credit: false, debit: true, merchant: Enum.at(merchants,1), user: Enum.at(users,1), company: Enum.at(companies,2),description: "New uniform"})
+Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 1200, credit: false, debit: true, merchant: Enum.at(merchants,1), user: Enum.at(users,1), company: Enum.at(companies,2),description: "New royal outfit"})
 Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 666, credit: false, debit: true, merchant: Enum.at(merchants,3), user: Enum.at(users,2), company: Enum.at(companies,1), description: "Nothing suspicious or anything"})
 Homework.Repo.insert!(%Homework.Transactions.Transaction{amount: 60, credit: true, debit: false, merchant: Enum.at(merchants,2), user: Enum.at(users,4), company: Enum.at(companies,1), description: "Art supplies"})
 

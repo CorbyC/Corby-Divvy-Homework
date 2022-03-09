@@ -7,6 +7,7 @@ defmodule Homework.Companies do
   alias Homework.Repo
 
   alias Homework.Companies.Company
+  alias Homework.Transactions.Transaction
 
   @doc """
   Returns the list of companies.
@@ -18,7 +19,13 @@ defmodule Homework.Companies do
 
   """
   def list_companies(_args) do
-    Repo.all(Company)
+    companies = Repo.all(Company)
+    totals = company_transaction_totals(Enum.map(companies, fn company -> company.id end)) # single query to transactions
+    companies = Enum.reduce(companies, [], fn(company, acc) -> # add calculated available_credit to each compoany
+      total = Enum.find(totals,fn x -> x.company_id == company.id end) || %{company_id: company.id, sum: 0}
+      acc = [Map.merge(company, %{available_credit: company.credit_line - total.sum}) | acc]
+    end)
+    companies
   end
 
   @doc """
@@ -36,7 +43,33 @@ defmodule Homework.Companies do
 
   """
   def get_company!(id) do
-    Repo.get!(Company, id)
+    company = Repo.get!(Company, id)
+    totals = company_transaction_totals([id])
+    total = Enum.find(totals,fn x -> x.company_id == company.id end) || %{company_id: company.id, sum: 0}
+    Map.merge(company, %{available_credit: company.credit_line - total.sum})
+  end
+
+  @doc """
+  Gets total transaxctions grouped by company
+
+  ## Examples
+
+      iex> company_transaction_totals(["9692694d","85dee313","04f4e614"]])
+      [
+        %{company_id: "9692694d", sum: 1050},
+        %{company_id: "85dee313", sum: 726},
+        %{company_id: "04f4e614", sum: 24}
+      ]
+
+  """
+  def company_transaction_totals(ids) do
+    query =
+      from t in Transaction,
+           where: t.company_id in ^ids,
+           group_by: t.company_id,
+
+           select: %{:company_id => t.company_id, :sum => sum(t.amount)}
+    Repo.all(query)
   end
 
   @doc """
