@@ -20,6 +20,21 @@ defmodule HomeworkWeb.Schemas.UsersSchema do
     end
   end
 
+  object :user_queries do
+    @desc "Get all Users"
+    field(:users, list_of(:user)) do
+      resolve(&UsersResolver.users/3)
+    end
+
+    @desc "Get User by id"
+    field :get_user, :user do
+      arg :id, non_null(:id)
+      resolve fn %{id: id}, _ ->
+        UsersResolver.get_solo_user(id)
+      end
+    end
+  end
+  
   object :user_mutations do
     @desc "Create a new user"
     field :create_user, :user do
