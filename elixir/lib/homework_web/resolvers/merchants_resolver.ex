@@ -9,6 +9,13 @@ defmodule HomeworkWeb.Resolvers.MerchantsResolver do
   end
 
   @doc """
+   Gets merchants by fuzzy match on name. (case insensitive)
+   """
+  def search_merchants(_root, %{name: name}, _info) do
+    {:ok, Merchants.search_merchants(name)}
+  end
+
+  @doc """
   Create a new merchant
   """
   def create_merchant(_root, args, _info) do

@@ -66,6 +66,16 @@ defmodule Homework.UsersTest do
       assert Users.get_user!(user.id) == user
     end
 
+    test "search_users/2 returns the user with proper search", %{valid_attrs: valid_attrs} do
+      user = user_fixture(valid_attrs)
+      assert Users.search_users("fi","na") == [user]
+    end
+
+    test "search_users/2 finds none if none match", %{valid_attrs: valid_attrs} do
+      user = user_fixture(valid_attrs)
+      assert Users.search_users("x","na") == []
+    end
+
     test "create_user/1 with valid data creates a user", %{
       valid_attrs: valid_attrs,
       company1: company1

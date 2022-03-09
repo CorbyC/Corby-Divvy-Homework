@@ -32,6 +32,16 @@ defmodule Homework.MerchantsTest do
       assert Merchants.get_merchant!(merchant.id) == merchant
     end
 
+    test "search_merchants/1 returns the merchant with proper search" do
+      merchant = merchant_fixture()
+      assert Merchants.search_merchants("so") == [merchant]
+    end
+
+    test "search_merchants/1 finds none if none match" do
+      merchant = merchant_fixture()
+      assert Merchants.search_merchants("x") == []
+    end
+
     test "create_merchant/1 with valid data creates a merchant" do
       assert {:ok, %Merchant{} = merchant} = Merchants.create_merchant(@valid_attrs)
       assert merchant.description == "some description"

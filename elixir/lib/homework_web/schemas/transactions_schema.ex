@@ -36,6 +36,14 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
     field(:transactions, list_of(:transaction)) do
       resolve(&TransactionsResolver.transactions/3)
     end
+
+    @desc "Gets transactions with amount between min and max (inclusive)"
+    field(:search_transactions, list_of(:transaction)) do
+      arg(:min, non_null(:integer))
+      arg(:max, non_null(:integer))
+
+      resolve(&TransactionsResolver.search_transactions/3)
+    end
   end
 
   object :transaction_mutations do

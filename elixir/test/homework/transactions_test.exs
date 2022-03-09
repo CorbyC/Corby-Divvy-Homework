@@ -114,6 +114,25 @@ defmodule Homework.TransactionsTest do
       assert Transactions.get_transaction!(transaction.id) == transaction
     end
 
+    test "search_transactionss/2 returns the transaction with proper search", %{valid_attrs: valid_attrs} do
+      transaction = transaction_fixture(valid_attrs)
+      assert Transactions.search_transactions(30,50) == [transaction]
+    end
+
+    test "search_transactions/2 finds none if none match", %{valid_attrs: valid_attrs} do
+      transaction = transaction_fixture(valid_attrs)
+      assert Transactions.search_transactions(50,100) == []
+    end
+
+    test "search_transactions/2 boundary test", %{valid_attrs: valid_attrs} do
+      transaction = transaction_fixture(valid_attrs)
+      assert Transactions.search_transactions(42,500) == [transaction]
+      assert Transactions.search_transactions(1,42) == [transaction]
+      assert Transactions.search_transactions(42,42) == [transaction]
+      assert Transactions.search_transactions(41,41) == []
+      assert Transactions.search_transactions(43,43) == []
+    end
+
     test "create_transaction/1 with valid data creates a transaction", %{
       valid_attrs: valid_attrs,
       merchant1: merchant1,

@@ -17,6 +17,13 @@ defmodule HomeworkWeb.Resolvers.UsersResolver do
   end
 
   @doc """
+   Gets users by fuzzy match on first name and last name. (case insensitive)
+   """
+  def search_users(_root, %{first_name: first, last_name: last}, _info) do
+    {:ok, Users.search_users(first, last)}
+  end
+
+  @doc """
   Get the company associated with a user
   """
   def company(_root, _args, %{source: %{company_id: company_id}}) do

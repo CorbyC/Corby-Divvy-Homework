@@ -33,6 +33,13 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   end
 
   @doc """
+  Gets transactions with amount between min and max (inclusive)
+  """
+  def search_transactions(_root, %{min: min, max: max}, _info) do
+    {:ok, Transactions.search_transactions(min, max)}
+  end
+
+  @doc """
   Create a new transaction
   """
   def create_transaction(_root, args, _info) do

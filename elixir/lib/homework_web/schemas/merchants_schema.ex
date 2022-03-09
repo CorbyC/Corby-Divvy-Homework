@@ -19,8 +19,15 @@ defmodule HomeworkWeb.Schemas.MerchantsSchema do
     field(:merchants, list_of(:merchant)) do
       resolve(&MerchantsResolver.merchants/3)
     end
+
+    @desc "Gets merchants by fuzzy match on name. (case insensitive)"
+    field(:search_merchants, list_of(:merchant)) do
+      arg(:name, non_null(:string))
+
+      resolve(&MerchantsResolver.search_merchants/3)
+    end
   end
-  
+
   object :merchant_mutations do
     @desc "Create a new merchant"
     field :create_merchant, :merchant do

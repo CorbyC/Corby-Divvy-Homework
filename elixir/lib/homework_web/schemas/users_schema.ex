@@ -33,8 +33,16 @@ defmodule HomeworkWeb.Schemas.UsersSchema do
         UsersResolver.get_solo_user(id)
       end
     end
+
+    @desc "Gets users by fuzzy match on first name and last name. (case insensitive)"
+    field(:search_users, list_of(:user)) do
+      arg(:first_name, non_null(:string))
+      arg(:last_name, non_null(:string))
+
+      resolve(&UsersResolver.search_users/3)
+    end
   end
-  
+
   object :user_mutations do
     @desc "Create a new user"
     field :create_user, :user do

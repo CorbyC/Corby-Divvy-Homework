@@ -38,6 +38,24 @@ defmodule Homework.Transactions do
   def get_transaction!(id), do: Repo.get!(Transaction, id)
 
   @doc """
+  Gets transactions with amount between min and max (inclusive)
+
+  ## Examples
+
+      iex> search_transactions(5, 20)
+      [%Transactoon{"id": "<guid>", "amount": 14} ...]
+
+  """
+  def search_transactions(min, max) do
+    query =
+      from t in Transaction,
+           where: t.amount <= ^max
+           and t.amount >= ^min,
+           select: t
+    Repo.all(query)
+  end
+
+  @doc """
   Creates a transaction.
 
   ## Examples
