@@ -10,6 +10,13 @@ defmodule HomeworkWeb.Resolvers.UsersResolver do
   end
 
   @doc """
+  Get a single user
+  """
+  def get_solo_user(id) do
+    {:ok, Users.get_user!(id)}
+  end
+
+  @doc """
   Get the company associated with a user
   """
   def company(_root, _args, %{source: %{company_id: company_id}}) do

@@ -9,6 +9,13 @@ defmodule HomeworkWeb.Resolvers.CompaniesResolver do
   end
 
   @doc """
+  Get a single company
+  """
+  def get_solo_company(id) do
+    {:ok, Companies.get_company!(id)}
+  end
+
+  @doc """
   Creates a company
   """
   def create_company(_root, args, _info) do
