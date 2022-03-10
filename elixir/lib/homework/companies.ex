@@ -23,7 +23,7 @@ defmodule Homework.Companies do
     totals = company_transaction_totals(Enum.map(companies, fn company -> company.id end)) # single query to transactions
     companies = Enum.reduce(companies, [], fn(company, acc) -> # add calculated available_credit to each compoany
       total = Enum.find(totals,fn x -> x.company_id == company.id end) || %{company_id: company.id, sum: 0}
-      acc = [Map.merge(company, %{available_credit: company.credit_line - total.sum}) | acc]
+      [Map.merge(company, %{available_credit: company.credit_line - total.sum}) | acc]
     end)
     companies
   end
@@ -85,9 +85,17 @@ defmodule Homework.Companies do
 
   """
   def create_company(attrs \\ %{}) do
-    %Company{}
+    result = %Company{}
     |> Company.changeset(attrs)
     |> Repo.insert()
+
+    case result do
+      {:ok, _} ->
+        {:ok, %Company{} = company} = result
+        {:ok, Map.merge(company, %{available_credit: company.credit_line})} # can't be transactions yet if first created
+      {:error, %{ errors: errors }} ->
+        result
+    end
   end
 
   @doc """
@@ -103,9 +111,17 @@ defmodule Homework.Companies do
 
   """
   def update_company(%Company{} = company, attrs) do
-    company
+    result = company
     |> Company.changeset(attrs)
     |> Repo.update()
+
+    case result do
+      {:ok, _} ->
+        {:ok, %Company{} = updatedCompany} = result
+        {:ok, get_company!(updatedCompany.id)} # get again to get dynamic availableCredit. There's probably a better way to do this
+      {:error, %{ errors: errors }} ->
+        result
+    end
   end
 
   @doc """

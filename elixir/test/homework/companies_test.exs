@@ -1,10 +1,80 @@
 defmodule Homework.CompaniesTest do
   use Homework.DataCase
 
+  alias Homework.Merchants
+  alias Homework.Transactions
+  alias Homework.Users
   alias Homework.Companies
 
   describe "companies" do
     alias Homework.Companies.Company
+
+    # setup do
+    #   {:ok, merchant1} =
+    #     Merchants.create_merchant(%{
+    #       description: "some description",
+    #       name: "some name"
+    #     })
+
+    #   {:ok, merchant2} =
+    #     Merchants.create_merchant(%{
+    #       description: "some updated description",
+    #       name: "some updated name"
+    #     })
+
+    #   {:ok, company1} =
+    #     Companies.create_company(%{
+    #       name: "some name",
+    #       credit_line: 45000
+    #     })
+
+    #   {:ok, company2} =
+    #     Companies.create_company(%{
+    #       name: "some update name",
+    #       credit_line: 77000
+    #     })
+
+    #   {:ok, user1} =
+    #     Users.create_user(%{
+    #       dob: "some dob",
+    #       first_name: "some first_name",
+    #       last_name: "some last_name",
+    #       company_id: company1.id
+    #     })
+
+    #   {:ok, transaction1} =
+    #     Transactions.create_transaction(%{
+    #       amount: 42,
+    #       credit: false,
+    #       debit: true,
+    #       description: "some description",
+    #       merchant_id: merchant1.id,
+    #       user_id: user1.id,
+    #       company_id: company1.id
+    #   })
+
+    #   {:ok, transaction2} =
+    #     Transactions.create_transaction(%{
+    #       amount: 42,
+    #       credit: false,
+    #       debit: true,
+    #       description: "some description",
+    #       merchant_id: merchant1.id,
+    #       user_id: user1.id,
+    #       company_id: company1.id
+    #   })
+
+    #   {:ok,
+    #    %{
+    #      merchant1: merchant1,
+    #      merchant2: merchant2,
+    #      user1: user1,
+    #      company1: company1,
+    #      company2: company2,
+    #      transaction1: transaction1,
+    #      transaction2: transaction2,
+    #    }}
+    # end
 
     @valid_attrs %{name: "some name", credit_line: 9000}
     @update_attrs %{
