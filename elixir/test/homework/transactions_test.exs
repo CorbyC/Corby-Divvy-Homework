@@ -120,7 +120,7 @@ defmodule Homework.TransactionsTest do
     end
 
     test "search_transactions/2 finds none if none match", %{valid_attrs: valid_attrs} do
-      transaction = transaction_fixture(valid_attrs)
+      transaction_fixture(valid_attrs)
       assert Transactions.search_transactions(50,100) == []
     end
 

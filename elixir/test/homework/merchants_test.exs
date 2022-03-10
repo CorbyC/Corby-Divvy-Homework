@@ -38,7 +38,7 @@ defmodule Homework.MerchantsTest do
     end
 
     test "search_merchants/1 finds none if none match" do
-      merchant = merchant_fixture()
+      merchant_fixture()
       assert Merchants.search_merchants("x") == []
     end
 

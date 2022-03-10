@@ -72,7 +72,7 @@ defmodule Homework.UsersTest do
     end
 
     test "search_users/2 finds none if none match", %{valid_attrs: valid_attrs} do
-      user = user_fixture(valid_attrs)
+      user_fixture(valid_attrs)
       assert Users.search_users("x","na") == []
     end
 

@@ -65,7 +65,8 @@ defmodule Homework.Companies do
   def company_transaction_totals(ids) do
     query =
       from t in Transaction,
-           where: t.company_id in ^ids,
+           where: t.company_id in ^ids
+           and t.credit == true,
            group_by: t.company_id,
 
            select: %{:company_id => t.company_id, :sum => sum(t.amount)}

@@ -9,72 +9,77 @@ defmodule Homework.CompaniesTest do
   describe "companies" do
     alias Homework.Companies.Company
 
-    # setup do
-    #   {:ok, merchant1} =
-    #     Merchants.create_merchant(%{
-    #       description: "some description",
-    #       name: "some name"
-    #     })
+    setup do
+      {:ok, merchant1} =
+        Merchants.create_merchant(%{
+          description: "some description",
+          name: "some name"
+        })
 
-    #   {:ok, merchant2} =
-    #     Merchants.create_merchant(%{
-    #       description: "some updated description",
-    #       name: "some updated name"
-    #     })
+      {:ok, company1} =
+        Companies.create_company(%{
+          name: "setup company 1",
+          credit_line: 45000,
+        })
 
-    #   {:ok, company1} =
-    #     Companies.create_company(%{
-    #       name: "some name",
-    #       credit_line: 45000
-    #     })
+      {:ok, company2} =
+        Companies.create_company(%{
+          name: "setup company 2",
+          credit_line: 77000,
+        })
 
-    #   {:ok, company2} =
-    #     Companies.create_company(%{
-    #       name: "some update name",
-    #       credit_line: 77000
-    #     })
+      {:ok, user1} =
+        Users.create_user(%{
+          dob: "some dob",
+          first_name: "some first_name",
+          last_name: "some last_name",
+          company_id: company1.id
+        })
 
-    #   {:ok, user1} =
-    #     Users.create_user(%{
-    #       dob: "some dob",
-    #       first_name: "some first_name",
-    #       last_name: "some last_name",
-    #       company_id: company1.id
-    #     })
+      {:ok, transaction1} =
+        Transactions.create_transaction(%{
+          amount: Enum.random(0..25000),
+          credit: true,
+          debit: false,
+          description: "some description",
+          merchant_id: merchant1.id,
+          user_id: user1.id,
+          company_id: company1.id
+      })
 
-    #   {:ok, transaction1} =
-    #     Transactions.create_transaction(%{
-    #       amount: 42,
-    #       credit: false,
-    #       debit: true,
-    #       description: "some description",
-    #       merchant_id: merchant1.id,
-    #       user_id: user1.id,
-    #       company_id: company1.id
-    #   })
+      {:ok, transaction2} =
+        Transactions.create_transaction(%{
+          amount: Enum.random(0..20000),
+          credit: true,
+          debit: false,
+          description: "some description",
+          merchant_id: merchant1.id,
+          user_id: user1.id,
+          company_id: company1.id
+      })
 
-    #   {:ok, transaction2} =
-    #     Transactions.create_transaction(%{
-    #       amount: 42,
-    #       credit: false,
-    #       debit: true,
-    #       description: "some description",
-    #       merchant_id: merchant1.id,
-    #       user_id: user1.id,
-    #       company_id: company1.id
-    #   })
+      {:ok, transaction3} =
+        Transactions.create_transaction(%{
+          amount: Enum.random(0..120000),
+          credit: false, # to make sure it only honors credit transactions when calculating available credit
+          debit: true,
+          description: "some description",
+          merchant_id: merchant1.id,
+          user_id: user1.id,
+          company_id: company1.id
+      })
 
-    #   {:ok,
-    #    %{
-    #      merchant1: merchant1,
-    #      merchant2: merchant2,
-    #      user1: user1,
-    #      company1: company1,
-    #      company2: company2,
-    #      transaction1: transaction1,
-    #      transaction2: transaction2,
-    #    }}
-    # end
+      {:ok,
+       %{
+         merchant1: merchant1,
+         user1: user1,
+         company1: company1,
+         company2: company2,
+         transaction1: transaction1,
+         transaction2: transaction2,
+         transaction3: transaction3,
+       }}
+    end
 
     @valid_attrs %{name: "some name", credit_line: 9000}
     @update_attrs %{
@@ -93,13 +98,23 @@ defmodule Homework.CompaniesTest do
     end
 
     test "list_companies/1 returns all companies" do
-      company = company_fixture()
-      assert Companies.list_companies([]) == [company]
+      company_fixture()
+      assert Enum.count(Companies.list_companies([])) == 3
+    end
+
+    test "list_companies!/1 returns calculated available_credit for company with given id", %{company1: company1, transaction1: transaction1, transaction2: transaction2} do
+      companies = Companies.list_companies([])
+      company = Enum.find(companies,fn c -> c.id == company1.id end)
+      assert company.available_credit == (company1.credit_line - transaction1.amount - transaction2.amount)
     end
 
     test "get_company!/1 returns the company with given id" do
       company = company_fixture()
       assert Companies.get_company!(company.id) == company
+    end
+
+    test "get_company!/1 returns calculated available_credit for company with given id", %{company1: company1, transaction1: transaction1, transaction2: transaction2} do
+      assert Companies.get_company!(company1.id).available_credit == (company1.credit_line - transaction1.amount - transaction2.amount)
     end
 
     test "create_company/1 with valid data creates a company" do
