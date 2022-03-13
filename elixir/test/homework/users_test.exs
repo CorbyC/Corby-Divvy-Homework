@@ -125,5 +125,9 @@ defmodule Homework.UsersTest do
       user = user_fixture(valid_attrs)
       assert %Ecto.Changeset{} = Users.change_user(user)
     end
+
+    # Since this is just giving an example of doing things, I didn't add tests for user resolvers.
+    # But there are resolver tests in companies_tests.exs
+
   end
 end

@@ -1,14 +1,17 @@
 defmodule Homework.CompaniesTest do
   use Homework.DataCase
+  use Ecto.Schema
 
   alias Homework.Merchants
   alias Homework.Transactions
   alias Homework.Users
   alias Homework.Companies
+  alias HomeworkWeb.Resolvers.CompaniesResolver
 
   describe "companies" do
     alias Homework.Companies.Company
 
+    # Pre-seed tests
     setup do
       {:ok, merchant1} =
         Merchants.create_merchant(%{
@@ -150,5 +153,85 @@ defmodule Homework.CompaniesTest do
       company = company_fixture()
       assert %Ecto.Changeset{} = Companies.change_company(company)
     end
+
+    # resolvers tests
+    test "resolver get companies/3" do
+      {:ok, companies } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companies) == 2
+    end
+
+    test "resolver get_solo_company/1", %{company1: company1} do
+      {:ok, company } = CompaniesResolver.get_solo_company(company1.id)
+      assert company.id == company1.id
+      assert company.name == company1.name
+    end
+
+    test "resolver get fake solo company" do
+      try do
+        CompaniesResolver.get_solo_company(Ecto.UUID.generate())
+      rescue
+        e -> assert String.contains?(e.message, "expected at least one result but got none in query")
+      end
+    end
+
+    test "resolver create_company/3" do
+      {:ok, companiesBefore } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companiesBefore) == 2
+      companyName = "New test company"
+      companyCreditLine = 55555
+      {:ok, company } = CompaniesResolver.create_company(nil, %{name: companyName, credit_line: companyCreditLine}, nil)
+      assert company.name == companyName
+      assert company.credit_line == companyCreditLine
+      {:ok, companiesAfter } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companiesAfter) == 3
+    end
+
+    test "resolver udpate_company/3", %{company1: company1} do
+      {:ok, companiesBefore } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companiesBefore) == 2
+      {:ok, company } = CompaniesResolver.get_solo_company(company1.id)
+      assert company.id == company1.id
+      assert company.name == company1.name
+      assert company.credit_line == company1.credit_line
+
+      companyName = "New update name"
+      companyCreditLine = 55555
+      {:ok, company } = CompaniesResolver.update_company(nil, %{id: company1.id, name: companyName, credit_line: companyCreditLine}, nil)
+      assert company.id == company1.id
+      assert company.name == companyName
+      assert company.credit_line == companyCreditLine
+      {:ok, companiesAfter } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companiesAfter) == 2
+    end
+
+    test "resolver update fake company" do
+      try do
+        CompaniesResolver.update_company(nil, %{id: Ecto.UUID.generate(), name: "Wont matter", credit_line: 1}, nil)
+      rescue
+        e -> assert String.contains?(e.message, "expected at least one result but got none in query")
+      end
+    end
+
+    test "resolver delete_company/3 with no transactions", %{company2: company2} do
+      {:ok, companiesBefore } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companiesBefore) == 2
+      {:ok, _ } = CompaniesResolver.delete_company(nil, %{id: company2.id}, nil)
+      {:ok, companiesAfter } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companiesAfter) == 1
+    end
+
+    test "resolver cannot delete company with transactions", %{company1: company1} do
+      # we could make deleting companies cascade delete transactions, but for now we'll leave it as a blocking behavior
+      {:ok, companiesBefore } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companiesBefore) == 2
+      try do
+        CompaniesResolver.delete_company(nil, %{id: company1.id}, nil)
+      rescue
+        e -> assert String.contains?(e.message, "transactions_company_id_fkey (foreign_key_constraint)")
+      end
+      {:ok, companiesAfter } = CompaniesResolver.companies(nil, {}, nil)
+      assert Enum.count(companiesAfter) == 2
+    end
+
   end
 end

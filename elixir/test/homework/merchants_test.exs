@@ -75,5 +75,8 @@ defmodule Homework.MerchantsTest do
       merchant = merchant_fixture()
       assert %Ecto.Changeset{} = Merchants.change_merchant(merchant)
     end
+
+    # Since this is just giving an example of doing things, I didn't add tests for merchant resolvers.
+    # But there are resolver tests in companies_tests.exs
   end
 end

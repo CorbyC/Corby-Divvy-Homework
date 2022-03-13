@@ -198,5 +198,9 @@ defmodule Homework.TransactionsTest do
       transaction = transaction_fixture(valid_attrs)
       assert %Ecto.Changeset{} = Transactions.change_transaction(transaction)
     end
+
+    # Since this is just giving an example of doing things, I didn't add tests for transaction resolvers.
+    # But there are resolver tests in companies_tests.exs
+
   end
 end

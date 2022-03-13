@@ -21,7 +21,10 @@ defmodule Homework.Companies do
   def list_companies(_args) do
     companies = Repo.all(Company)
     totals = company_transaction_totals(Enum.map(companies, fn company -> company.id end)) # single query to transactions
-    companies = Enum.reduce(companies, [], fn(company, acc) -> # add calculated available_credit to each compoany
+    # Add calculated available_credit to each company
+    # I feel like this can and possibly should be done at the resolvers layer instead?
+    # I'd have verified with another dev before picking a spot. But I got it working here
+    companies = Enum.reduce(companies, [], fn(company, acc) ->
       total = Enum.find(totals,fn x -> x.company_id == company.id end) || %{company_id: company.id, sum: 0}
       [Map.merge(company, %{available_credit: company.credit_line - total.sum}) | acc]
     end)
@@ -43,6 +46,8 @@ defmodule Homework.Companies do
 
   """
   def get_company!(id) do
+    # I usually like to reduce code duplication by making the singleId just call the multiId call passing 1 id
+    # But since the above doesn't take a list of ids and it'd pull all, I left this as a smaller pull
     company = Repo.get!(Company, id)
     totals = company_transaction_totals([id])
     total = Enum.find(totals,fn x -> x.company_id == company.id end) || %{company_id: company.id, sum: 0}
@@ -66,6 +71,8 @@ defmodule Homework.Companies do
     query =
       from t in Transaction,
            where: t.company_id in ^ids
+           # In the real world I'd validate requirements, because filtering by this isn't in the homework asks.
+           # But we're talking about a credit line so filtering by credit type transactions makes sense to me
            and t.credit == true,
            group_by: t.company_id,
 
