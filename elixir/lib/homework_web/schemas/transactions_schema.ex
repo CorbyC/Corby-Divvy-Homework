@@ -8,7 +8,7 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
 
   object :transaction do
     field(:id, non_null(:id))
-    field(:amount, :integer)
+    field(:amount, :decimal)
     field(:credit, :boolean)
     field(:debit, :boolean)
     field(:description, :string)
@@ -39,8 +39,8 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
 
     @desc "Gets transactions with amount between min and max (inclusive)"
     field(:search_transactions, list_of(:transaction)) do
-      arg(:min, non_null(:integer))
-      arg(:max, non_null(:integer))
+      arg(:min, non_null(:decimal))
+      arg(:max, non_null(:decimal))
 
       resolve(&TransactionsResolver.search_transactions/3)
     end
@@ -49,8 +49,8 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
   object :transaction_mutations do
     @desc "Create a new transaction"
     field :create_transaction, :transaction do
-      @desc "amount is in cents"
-      arg(:amount, non_null(:integer))
+      @desc "amount is in dollars"
+      arg(:amount, non_null(:decimal))
       arg(:credit, non_null(:boolean))
       arg(:debit, non_null(:boolean))
       arg(:description, non_null(:string))
@@ -66,8 +66,8 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
       arg(:id, non_null(:id))
       arg(:user_id, non_null(:id))
       arg(:merchant_id, non_null(:id))
-      @desc "amount is in cents"
-      arg(:amount, non_null(:integer))
+      @desc "amount is in dollars"
+      arg(:amount, non_null(:decimal))
       arg(:credit, non_null(:boolean))
       arg(:debit, non_null(:boolean))
       arg(:description, non_null(:string))
