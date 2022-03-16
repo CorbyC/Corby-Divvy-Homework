@@ -90,13 +90,6 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   end
 
   @doc """
-  Converts a integer cents to it's decimal dollar equivalent
-  """
-  def to_dollars(cents) when is_integer(cents) do
-    Decimal.div(cents, 100) |> Decimal.round(2)
-  end
-
-  @doc """
   For a transaction's amount field, converts the integer cents to it's decimal dollar equivalent
   """
   def to_dollars(%{amount: cents} = transaction) do
@@ -104,18 +97,19 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   end
 
   @doc """
-  Converts the dollar amount entered to it's cents integer equivalent
+  Converts a decimal cents to it's decimal dollar equivalent
   """
-  def to_cents(%Decimal{} = dollars) do
-    Decimal.round(dollars, 2) |> Decimal.mult(100) |> Decimal.to_integer()
+  def to_dollars(%Decimal{} = cents) do
+    Decimal.div(cents, 100) |> Decimal.round(2)
   end
 
   @doc """
-  Converts the integer dollar amount entered to it's cents equivalent
+  Converts a integer cents to it's decimal dollar equivalent
   """
-  def to_cents(dollars) do
-    dollars * 100
+  def to_dollars(cents) when is_integer(cents) do
+    Decimal.div(cents, 100) |> Decimal.round(2)
   end
+
 
   @doc """
   For a transaction's amount field, converts the dollar amount to it's cents equivalent
@@ -123,4 +117,19 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   def to_cents(%{amount: dollars} = transaction) do
     %{transaction | amount: dollars |> to_cents}
   end
+
+  @doc """
+  Converts the decimal dollar amount entered to it's cents integer equivalent
+  """
+  def to_cents(%Decimal{} = dollars) do
+    Decimal.round(dollars, 2) |> Decimal.mult(100) |> Decimal.to_integer()
+  end
+
+  @doc """
+  For a integer amount field, converts the dollar amount to it's cents equivalent
+  """
+  def to_cents(dollars) do
+    dollars * 100
+  end
+
 end

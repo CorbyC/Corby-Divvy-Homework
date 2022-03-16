@@ -5,7 +5,6 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
   use Absinthe.Schema.Notation
 
   alias HomeworkWeb.Resolvers.TransactionsResolver
-  alias HomeworkWeb.PaginationHelper
 
   object :transaction do
     field(:id, non_null(:id))

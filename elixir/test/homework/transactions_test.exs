@@ -1,5 +1,6 @@
 defmodule Homework.TransactionsTest do
   use Homework.DataCase
+  alias Decimal
 
   alias Homework.Merchants
   alias Homework.Transactions
@@ -96,6 +97,16 @@ defmodule Homework.TransactionsTest do
         company_id: company1.id
       }
 
+      valid_resolver_attrs = %{
+        amount: Decimal.new("42.504"), # while the playground passed a decimal, this test treated it as a float and got mad
+        credit: false,
+        debit: true,
+        description: "Now with decimals!",
+        merchant_id: merchant1.id,
+        user_id: user1.id,
+        company_id: company1.id
+      }
+
       update_attrs = %{
         amount: 43,
         credit: false,
@@ -119,6 +130,7 @@ defmodule Homework.TransactionsTest do
       {:ok,
        %{
          valid_attrs: valid_attrs,
+         valid_resolver_attrs: valid_resolver_attrs,
          update_attrs: update_attrs,
          invalid_attrs: invalid_attrs,
          merchant1: merchant1,
@@ -232,6 +244,23 @@ defmodule Homework.TransactionsTest do
     test "change_transaction/1 returns a transaction changeset", %{valid_attrs: valid_attrs} do
       transaction = transaction_fixture(valid_attrs)
       assert %Ecto.Changeset{} = Transactions.change_transaction(transaction)
+    end
+
+
+    test "resolver create_transaction/3 with valid decimal data creates a transaction", %{
+      valid_resolver_attrs: valid_resolver_attrs,
+      merchant1: merchant1,
+      user1: user1,
+      company1: company1
+    } do
+      assert {:ok, %Transaction{} = transaction} = TransactionsResolver.create_transaction(nil, valid_resolver_attrs, nil)
+      assert transaction.amount == Decimal.new("42.50")
+      assert transaction.credit == false
+      assert transaction.debit == true
+      assert transaction.description == "Now with decimals!"
+      assert transaction.merchant_id == merchant1.id
+      assert transaction.user_id == user1.id
+      assert transaction.company_id == company1.id
     end
 
     test "resolver transactions with pagination params" do
