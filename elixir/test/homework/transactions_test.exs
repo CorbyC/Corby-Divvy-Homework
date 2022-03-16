@@ -5,6 +5,7 @@ defmodule Homework.TransactionsTest do
   alias Homework.Transactions
   alias Homework.Users
   alias Homework.Companies
+  alias HomeworkWeb.Resolvers.TransactionsResolver
 
   describe "transactions" do
     alias Homework.Transactions.Transaction
@@ -49,6 +50,40 @@ defmodule Homework.TransactionsTest do
           last_name: "some updated last_name",
           company_id: company2.id
         })
+
+      {:ok, _transaction1} =
+        Transactions.create_transaction(%{
+          amount: 1000,
+          credit: false,
+          debit: true,
+          description: "pre-existing transaction",
+          merchant_id: merchant1.id,
+          user_id: user1.id,
+          company_id: company1.id
+        })
+
+       {:ok, _transaction2} =
+          Transactions.create_transaction(%{
+            amount: 2000,
+            credit: false,
+            debit: true,
+            description: "pre-existing transaction2",
+            merchant_id: merchant1.id,
+            user_id: user1.id,
+            company_id: company1.id
+        })
+
+       {:ok, _transaction3} =
+          Transactions.create_transaction(%{
+            amount: 3000,
+            credit: false,
+            debit: true,
+            description: "pre-existing transaction3",
+            merchant_id: merchant1.id,
+            user_id: user1.id,
+            company_id: company1.id
+        })
+
 
       valid_attrs = %{
         amount: 42,
@@ -105,8 +140,8 @@ defmodule Homework.TransactionsTest do
     end
 
     test "list_transactions/1 returns all transactions", %{valid_attrs: valid_attrs} do
-      transaction = transaction_fixture(valid_attrs)
-      assert Transactions.list_transactions([]) == [transaction]
+      transaction_fixture(valid_attrs) # one more for funsies
+      assert Enum.count(Transactions.list_transactions([])) == 4
     end
 
     test "get_transaction!/1 returns the transaction with given id", %{valid_attrs: valid_attrs} do
@@ -199,7 +234,42 @@ defmodule Homework.TransactionsTest do
       assert %Ecto.Changeset{} = Transactions.change_transaction(transaction)
     end
 
-    # Since this is just giving an example of doing things, I didn't add tests for transaction resolvers.
+    test "resolver transactions with pagination params" do
+      {:ok, transactions } = TransactionsResolver.transactions(nil, %{}, nil)
+      assert Enum.count(transactions) == 3
+      assert Enum.at(transactions,0).description == "pre-existing transaction"
+
+      {:ok, transactionsLimit2 } = TransactionsResolver.transactions(nil, %{limit: 2}, nil)
+      assert Enum.count(transactionsLimit2) == 2
+      assert Enum.at(transactionsLimit2,0).description == "pre-existing transaction"
+
+      {:ok, transactionsLimit2Skip2 } = TransactionsResolver.transactions(nil, %{limit: 2, skip: 2}, nil)
+      assert Enum.count(transactionsLimit2Skip2) == 1
+      assert Enum.at(transactionsLimit2Skip2,0).description == "pre-existing transaction3"
+
+      {:ok, transactionsSkip1 } = TransactionsResolver.transactions(nil, %{skip: 1}, nil)
+      assert Enum.count(transactionsSkip1) == 2
+      assert Enum.at(transactionsSkip1,0).description == "pre-existing transaction2"
+    end
+
+    test "resolver search transactions with pagination params" do
+      {:ok, transactions } = TransactionsResolver.search_transactions(nil, %{min: 4, max: 4000}, nil)
+      assert Enum.count(transactions) == 3
+      assert Enum.at(transactions,0).description == "pre-existing transaction"
+
+      {:ok, transactionsLimit2 } = TransactionsResolver.transactions(nil, %{min: 0, max: 4000, limit: 2}, nil)
+      assert Enum.count(transactionsLimit2) == 2
+      assert Enum.at(transactionsLimit2,0).description == "pre-existing transaction"
+
+      {:ok, transactionsLimit2Skip2 } = TransactionsResolver.transactions(nil, %{min: 0, max: 4000, limit: 2, skip: 2}, nil)
+      assert Enum.count(transactionsLimit2Skip2) == 1
+      assert Enum.at(transactionsLimit2Skip2,0).description == "pre-existing transaction3"
+
+      {:ok, transactionsSkip1 } = TransactionsResolver.transactions(nil, %{min: 0, max: 4000, skip: 1}, nil)
+      assert Enum.count(transactionsSkip1) == 2
+      assert Enum.at(transactionsSkip1,0).description == "pre-existing transaction2"
+    end
+    # Since this is just giving an example of doing things, I didn't add tests for basic transaction resolvers.
     # But there are resolver tests in companies_tests.exs
 
   end

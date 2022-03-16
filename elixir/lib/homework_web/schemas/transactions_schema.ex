@@ -5,6 +5,7 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
   use Absinthe.Schema.Notation
 
   alias HomeworkWeb.Resolvers.TransactionsResolver
+  alias HomeworkWeb.PaginationHelper
 
   object :transaction do
     field(:id, non_null(:id))
@@ -34,6 +35,8 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
   object :transaction_queries do
     @desc "Get all Transactions"
     field(:transactions, list_of(:transaction)) do
+      arg(:limit, :integer)
+      arg(:skip, :integer)
       resolve(&TransactionsResolver.transactions/3)
     end
 
@@ -41,6 +44,8 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
     field(:search_transactions, list_of(:transaction)) do
       arg(:min, non_null(:decimal))
       arg(:max, non_null(:decimal))
+      arg(:limit, :integer)
+      arg(:skip, :integer)
 
       resolve(&TransactionsResolver.search_transactions/3)
     end

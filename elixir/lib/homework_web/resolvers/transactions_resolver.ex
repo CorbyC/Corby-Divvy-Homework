@@ -3,12 +3,14 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   alias Homework.Transactions
   alias Homework.Users
   alias Homework.Companies
+  alias HomeworkWeb.PaginationHelper
 
   @doc """
   Get a list of transcations
   """
   def transactions(_root, args, _info) do
-    {:ok, Transactions.list_transactions(args) |> Enum.map(&to_dollars/1)}
+    transactions = Transactions.list_transactions(args) |> Enum.map(&to_dollars/1)
+    PaginationHelper.paginate(transactions, args)
   end
 
   @doc """
@@ -35,11 +37,13 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   @doc """
   Gets transactions with amount between min and max (inclusive)
   """
-  def search_transactions(_root, %{min: min, max: max}, _info) do
-    {:ok, Transactions.search_transactions(
+  def search_transactions(_root, args, _info) do
+    %{min: min, max: max} = args
+    transactions = Transactions.search_transactions(
       min |> to_cents,
       max |> to_cents)
-      |> Enum.map(&to_dollars/1)}
+      |> Enum.map(&to_dollars/1)
+      PaginationHelper.paginate(transactions, args)
   end
 
   @doc """
@@ -104,6 +108,13 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   """
   def to_cents(%Decimal{} = dollars) do
     Decimal.round(dollars, 2) |> Decimal.mult(100) |> Decimal.to_integer()
+  end
+
+  @doc """
+  Converts the integer dollar amount entered to it's cents equivalent
+  """
+  def to_cents(dollars) do
+    dollars * 100
   end
 
   @doc """
