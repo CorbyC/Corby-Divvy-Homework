@@ -23,6 +23,8 @@ defmodule HomeworkWeb.Schemas.UsersSchema do
   object :user_queries do
     @desc "Get all Users"
     field(:users, list_of(:user)) do
+      arg(:limit, :integer)
+      arg(:skip, :integer)
       resolve(&UsersResolver.users/3)
     end
 
@@ -38,6 +40,8 @@ defmodule HomeworkWeb.Schemas.UsersSchema do
     field(:search_users, list_of(:user)) do
       arg(:first_name, non_null(:string))
       arg(:last_name, non_null(:string))
+      arg(:limit, :integer)
+      arg(:skip, :integer)
 
       resolve(&UsersResolver.search_users/3)
     end
